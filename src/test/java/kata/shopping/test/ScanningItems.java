@@ -10,14 +10,26 @@ import kata.shopping.Checkout;
 public class ScanningItems {
 
     private int priceOfOneA;
+    private int priceOfOneB;
+    private int priceOfOneC;
+    private int priceOfOneD;
+    private int discountA, discountB, discountC, discountD;
+    private int discountMultiplierA, discountMultiplierB, discountMultiplierC, discountMultiplierD;
 
     private Checkout checkout;
 
     @Before
     public void setUp() {
         priceOfOneA = 50;
+        priceOfOneB = 30;
+        priceOfOneC = 20;
+        priceOfOneD = 15;
+        discountA = 130; discountB = 45; discountC = 0; discountD = 0;
+        discountMultiplierA = 3; discountMultiplierB = 2; discountMultiplierC = 0; discountMultiplierD = 0;
 
-        checkout = new Checkout(priceOfOneA);
+        checkout = new Checkout(priceOfOneA, priceOfOneB, priceOfOneC, priceOfOneD,
+                    discountA, discountB, discountC, discountD,
+                    discountMultiplierA, discountMultiplierB, discountMultiplierC, discountMultiplierD);
     }
 
     /*
@@ -31,7 +43,7 @@ public class ScanningItems {
      */
     @Test
     public void scanningOneAGivesATotalPriceOf50() {
-        checkout.scan('A');
+        checkout.scan("A");
 
         assertThat(checkout.getTotalPrice()).isEqualTo(priceOfOneA);
     }
@@ -44,8 +56,8 @@ public class ScanningItems {
      */
     @Test
     public void scanningTwoAsGivesATotalPriceOfTwoAs() {
-        checkout.scan('A');
-        checkout.scan('A');
+        checkout.scan("A");
+        checkout.scan("A");
 
         /*
 
@@ -60,8 +72,39 @@ public class ScanningItems {
 
     @Test
     public void scanningOneBGivesATotalPriceOf30() {
-        checkout.scan('B');
+        checkout.scan("B");
 
-        assertThat(checkout.getTotalPrice()).isEqualTo(30);
+        assertThat(checkout.getTotalPrice()).isEqualTo(priceOfOneB);
+    }
+
+    @Test
+    public void scanningTwoBsGivesATotalPriceOf45() {
+        //int priceOfTwoBs = priceOfOneB * 2;
+        checkout.scan("B");
+        checkout.scan("B");
+
+        assertThat(checkout.getTotalPrice()).isEqualTo(45);
+    }
+
+    @Test
+    public void scanningThreeItemsInTheScanStringProducesSameAsThreeScans() {
+        checkout.scan("AAA");
+
+        assertThat(checkout.getTotalPrice()).isEqualTo(130);
+    }
+
+    @Test
+    public void scanningSomethingOtherThanATOdGivesZero() {
+        int priceOfNotAtoD = 0;
+        checkout.scan("X");
+
+        assertThat(checkout.getTotalPrice()).isEqualTo(priceOfNotAtoD);
+    }
+
+    @Test
+    public void scanningSomethingComplex() {
+        checkout.scan("XDCBADDADBBCAC");
+
+        assertThat(checkout.getTotalPrice()).isEqualTo(325);
     }
 }
